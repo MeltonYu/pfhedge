@@ -452,7 +452,7 @@ class TestPrevHedge(_TestFeature):
         with pytest.raises(AttributeError):
             _ = f.get(0)
             # expect = torch.zeros((N, 1, 1))
-            # assert_close(result, expect)
+            # assert_close(paper_experiment, expect)
 
         # input = torch.cat([feature[0] for feature in hedger.inputs], dim=-1)
         input = torch.randn(N, 1, 2).to(device)

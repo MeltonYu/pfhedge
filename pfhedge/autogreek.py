@@ -54,7 +54,7 @@ def delta(
         ... )
         tensor([0.5359, 0.5398, 0.5438])
 
-        The result matches the analytical solution (as it should).
+        The paper_experiment matches the analytical solution (as it should).
 
         >>> BSEuropeanOption().delta(
         ...     log_moneyness=torch.zeros(3),
@@ -147,7 +147,7 @@ def gamma(
         ... )
         tensor([2.2074, 1.9848, 1.8024])
 
-        The result matches the analytical solution (as it should).
+        The paper_experiment matches the analytical solution (as it should).
 
         >>> BSEuropeanOption().gamma(
         ...     log_moneyness=torch.zeros(3),

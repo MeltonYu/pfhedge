@@ -29,8 +29,8 @@ from .loss import EntropicRiskMeasure
 from .loss import HedgeLoss
 
 
-class Hedger(Module):
-    """Module to hedge and price derivatives.
+class Hedger_pdep(Module):
+    """Module to hedge and price derivatives that has path-dependent payoffs.
 
     References:
         - Buehler, H., Gonon, L., Teichmann, J. and Wood, B., 2019.
@@ -247,6 +247,14 @@ class Hedger(Module):
         """
         return self.inputs.of(derivative=derivative).get(time_step)
 
+    def get_input_pdep(self, derivative: BaseDerivative, time_step: Optional[int]) -> Tensor:
+
+        input_list = [self.inputs.of(derivative=derivative).get(i) for i in range(time_step+1)]
+        input_tensor = torch.cat(input_list, dim=-2)
+
+        return input_tensor
+
+
     def _get_hedge(
         self, derivative: BaseDerivative, hedge: Optional[List[BaseInstrument]]
     ) -> List[BaseInstrument]:
@@ -294,7 +302,6 @@ class Hedger(Module):
         """
         inputs = self.inputs.of(derivative, self)
         hedge = self._get_hedge(derivative, hedge)
-
         # Check that the spot prices of the hedges have the same sizes
         if not all(h.spot.size() == hedge[0].spot.size() for h in hedge):
             raise ValueError("The spot prices of the hedges must have the same size")
@@ -608,8 +615,8 @@ class Hedger(Module):
             # Compute training loss and backpropagate
             self.train()
             optimizer.zero_grad()
-            loss = compute_loss()
-            loss.backward()
+            loss = compute_loss()   #Here is the forward pass !
+            loss.backward()        #Here is the backward pass
             optimizer.step()
 
             # Compute validation loss
@@ -677,5 +684,3 @@ class Hedger(Module):
             mean_price = ensemble_mean(_get_price, n_times=n_times)
 
         return mean_price
-
-
